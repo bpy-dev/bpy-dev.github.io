@@ -88,7 +88,7 @@ useSeoMeta({
           <figure class="hero-video-card">
             <div class="hero-demo-intro">
               <p class="mini-label">Reference image → agent → headless Blender</p>
-              <h2>Watch an agent rebuild images without opening the GUI.</h2>
+              <p class="hero-demo-title">Watch an agent rebuild images without opening the GUI.</p>
               <p>It reads the reference, writes Python through the CLI, renders headlessly, inspects the result, and iterates.</p>
             </div>
             <div class="hero-video-topbar"><span>BlenderBench / Run 001</span><span>27 tasks · 270 rounds</span></div>

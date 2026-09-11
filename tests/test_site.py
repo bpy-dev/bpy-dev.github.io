@@ -99,9 +99,15 @@ class StaticHomepageTests(unittest.TestCase):
         self.assertLess(self.text.lower().find("give your agent a reference image"), 1_000)
 
     def test_video_explains_the_reference_to_cli_workflow_before_playback(self):
-        intro = self.source.index('<div class="hero-demo-intro">')
-        video = self.source.index('<video')
-        self.assertLess(intro, video)
+        intro = re.search(
+            r'<div class="hero-demo-intro">(?P<body>.*?)</div>',
+            self.html,
+            flags=re.S,
+        )
+        self.assertIsNotNone(intro)
+        assert intro
+        self.assertLess(intro.end(), self.html.index("<video", intro.end()))
+        intro_text = " ".join(re.sub(r"<[^>]+>", " ", intro.group("body")).split())
         for phrase in (
             "Reference image → agent → headless Blender",
             "without opening the GUI",
@@ -111,7 +117,20 @@ class StaticHomepageTests(unittest.TestCase):
             "iterates",
         ):
             with self.subTest(phrase=phrase):
-                self.assertIn(phrase, self.text)
+                self.assertIn(phrase, intro_text)
+
+    def test_page_heading_precedes_demo_styling_text_semantically(self):
+        headings = re.findall(r"<h([1-6])\b", self.html, flags=re.I)
+        self.assertTrue(headings)
+        self.assertEqual(headings[0], "1")
+        intro = re.search(
+            r'<div class="hero-demo-intro">(?P<body>.*?)</div>',
+            self.html,
+            flags=re.S,
+        )
+        self.assertIsNotNone(intro)
+        assert intro
+        self.assertNotRegex(intro.group("body"), r"<h[1-6]\b")
 
     def test_community_preview_and_verified_evidence_are_present(self):
         required = [

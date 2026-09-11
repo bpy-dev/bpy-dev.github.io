@@ -39,7 +39,7 @@ h1 { max-width:760px; margin:0; font-size:clamp(44px,5.6vw,79px); line-height:.9
 .hero-video-card:before { content:""; position:absolute; inset:-32px 36px auto auto; width:72px;height:72px;border:1px solid var(--blue); transform:rotate(45deg); z-index:-1; }
 .hero-demo-intro { padding:22px 20px 20px;border-bottom:1px solid #262932;background:linear-gradient(135deg,#151820,#0d0f13); }
 .hero-demo-intro .mini-label { margin:0 0 12px;color:#8eb2ff;font-size:10px; }
-.hero-demo-intro h2 { max-width:540px;margin:0;font-size:clamp(22px,2.3vw,31px);line-height:1.08;letter-spacing:-.035em; }
+.hero-demo-title { max-width:540px;margin:0;font-size:clamp(22px,2.3vw,31px);line-height:1.08;letter-spacing:-.035em;font-weight:700; }
 .hero-demo-intro>p:last-child { max-width:620px;margin:12px 0 0;color:#b2b5bd;font-size:13px;line-height:1.5; }
 .hero-video-topbar { display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #262932;color:#b2b5bd;font-size:10px;letter-spacing:.07em;text-transform:uppercase; }
 .hero-video-player { display:block;width:100%;aspect-ratio:53/29;background:#000;object-fit:cover; }

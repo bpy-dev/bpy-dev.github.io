@@ -34,21 +34,21 @@ onBeforeUnmount(() => {
 })
 
 useHead({
-  title: 'bpy.dev — Blender for Python and agents',
+  title: 'bpy.dev — Headless Blender for agents',
   link: [{ rel: 'canonical', href: 'https://bpy.dev/' }]
 })
 
 useSeoMeta({
-  description: 'Use Blender as a Python module and give agents a narrow MCP interface. Explore the open community preview and its first BlenderBench results.',
+  description: 'Give an agent a reference image and let it build in Blender through a narrow CLI and MCP interface—headlessly, without opening the GUI.',
   ogType: 'website',
   ogUrl: 'https://bpy.dev/',
-  ogTitle: 'bpy.dev — Blender for Python and agents',
-  ogDescription: 'A Python-first Blender runtime and a narrow, auditable MCP interface for agents.',
+  ogTitle: 'bpy.dev — Headless Blender for agents',
+  ogDescription: 'Give an agent a reference image. Let it build, render, inspect, and iterate in Blender through the CLI.',
   ogImage: 'https://bpy.dev/assets/blenderbench-result.webp',
   ogImageAlt: 'A BlenderBench generated bedroom scene shown beside its target render.',
   twitterCard: 'summary_large_image',
-  twitterTitle: 'bpy.dev — Blender for Python and agents',
-  twitterDescription: 'A Python-first Blender runtime and a narrow, auditable MCP interface for agents.',
+  twitterTitle: 'bpy.dev — Headless Blender for agents',
+  twitterDescription: 'Give an agent a reference image. Let it build, render, inspect, and iterate in Blender through the CLI.',
   twitterImage: 'https://bpy.dev/assets/blenderbench-result.webp'
 })
 </script>
@@ -74,7 +74,7 @@ useSeoMeta({
         </button>
         <nav id="site-nav" class="site-nav" :class="{ 'is-open': navOpen }" aria-label="Primary navigation">
           <a href="#capabilities" @click="closeNav">Capabilities</a>
-          <a href="#architecture" @click="closeNav">Architecture</a>
+          <a href="#architecture" @click="closeNav">How it works</a>
           <a href="#evidence" @click="closeNav">Evidence</a>
           <UButton class="button button-small button-dark" color="neutral" href="https://github.com/bpy-dev/blender-mcp">View source <span aria-hidden="true">↗</span></UButton>
         </nav>
@@ -86,6 +86,11 @@ useSeoMeta({
         <div class="hero-grid" aria-hidden="true"><span /><span /><span /></div>
         <div class="shell hero-layout">
           <figure class="hero-video-card">
+            <div class="hero-demo-intro">
+              <p class="mini-label">Reference image → agent → headless Blender</p>
+              <h2>Watch an agent rebuild images without opening the GUI.</h2>
+              <p>It reads the reference, writes Python through the CLI, renders headlessly, inspects the result, and iterates.</p>
+            </div>
             <div class="hero-video-topbar"><span>BlenderBench / Run 001</span><span>27 tasks · 270 rounds</span></div>
             <video
               class="hero-video-player"
@@ -100,15 +105,15 @@ useSeoMeta({
               <a href="https://huggingface.co/datasets/michaelgold/blenderbench-direct-results/resolve/7c2c43be4517aee4d76d2b445578988de186970c/video/blenderbench-complete-compilation.mp4">Watch the BlenderBench compilation video</a>.
             </video>
             <figcaption class="hero-video-caption">
-              <span>Latest full run: generated scene beside target, task by task.</span>
+              <span>The full run: reference image and generated scene, task by task.</span>
               <span>The on-screen percentage is CLIP image-embedding cosine similarity—not literal task accuracy.</span>
               <span class="hero-video-links"><a href="#blenderbench-video-description">Read the video description and results</a> · <a href="https://huggingface.co/datasets/michaelgold/blenderbench-direct-results/resolve/7c2c43be4517aee4d76d2b445578988de186970c/video/blenderbench-complete-compilation.mp4">Watch/download on Hugging Face</a></span>
             </figcaption>
           </figure>
           <div class="hero-copy">
             <UBadge class="eyebrow" color="neutral" variant="subtle"><span class="status-dot" aria-hidden="true" /> Open community preview</UBadge>
-            <h1 id="hero-title">Use Blender as a Python module. Give agents a narrow MCP interface.</h1>
-            <p class="hero-lede">A focused path from ordinary Python code to Blender scenes: one runtime you can import, four tools an agent can reason about, and a protocol surface that stays still.</p>
+            <h1 id="hero-title">Give your agent a reference image. Let it build the Blender scene.</h1>
+            <p class="hero-lede"><strong>blender-mcp makes Blender a headless backend for coding agents.</strong> The agent uses the image as its goal, drives Blender through a narrow CLI and MCP surface, then renders and inspects its own work as it goes.</p>
             <div class="actions" role="group" aria-label="Project links">
               <UButton class="button button-primary" href="https://github.com/bpy-dev/blender-mcp">Explore blender-mcp <span aria-hidden="true">↗</span></UButton>
               <UButton class="button button-secondary" color="neutral" variant="outline" href="https://github.com/bpy-dev/blender-mcp/issues">Give feedback <span aria-hidden="true">→</span></UButton>
@@ -122,18 +127,18 @@ useSeoMeta({
         <div class="shell">
           <div class="section-heading">
             <p class="kicker">01 / What developers can do</p>
-            <h2 id="capabilities-title">Two surfaces. One Blender runtime.</h2>
-            <p>Keep direct control in Python. Expose only the operations an agent needs.</p>
+            <h2 id="capabilities-title">Blender is the backend. Your agent does the work.</h2>
+            <p>Use the same Python runtime directly, or expose a small set of operations to an agent.</p>
           </div>
           <div class="capability-grid">
             <UCard class="capability-card" as="article" :ui="{ body: 'contents' }">
               <span class="card-index" aria-hidden="true">A</span>
-              <div><h3>Import Blender</h3><p>Build tools, render pipelines, tests, and batch jobs around <code>import bpy</code> in a normal Python workflow.</p></div>
+              <div><h3>Use it from Python</h3><p>Build render pipelines, tests, and batch jobs around <code>import bpy</code> in a normal Python workflow.</p></div>
               <span class="card-tag">Python API</span>
             </UCard>
             <UCard class="capability-card capability-card-dark" as="article" :ui="{ body: 'contents' }">
               <span class="card-index" aria-hidden="true">B</span>
-              <div><h3>Constrain agents</h3><p>Give an agent exactly four MCP tools instead of a sprawling control plane. Smaller surfaces are easier to inspect and evaluate.</p></div>
+              <div><h3>Let an agent drive it</h3><p>Give an agent four CLI-friendly MCP tools to write Python, render the scene, inspect the image, and keep working.</p></div>
               <a class="card-link" href="https://github.com/bpy-dev/blender-mcp">Inspect the interface <span aria-hidden="true">↗</span></a>
             </UCard>
           </div>
@@ -143,14 +148,14 @@ useSeoMeta({
       <section id="architecture" class="architecture rule-top" aria-labelledby="architecture-title">
         <div class="shell architecture-layout">
           <div class="section-heading architecture-intro">
-            <p class="kicker">02 / System boundary</p>
-            <h2 id="architecture-title">Runtime → MCP → Frozen Protocol</h2>
-            <p>Separate execution from agent access, then make the evaluation boundary repeatable.</p>
+            <p class="kicker">02 / How it works</p>
+            <h2 id="architecture-title">Reference → Build → Inspect</h2>
+            <p>The loop is visual, but the backend is headless. No one has to sit in front of Blender.</p>
           </div>
           <ol class="architecture-flow">
-            <li><span class="flow-number">01</span><div><h3>Runtime</h3><p>Blender capabilities available through Python, suitable for local tooling and automation.</p></div></li>
-            <li><span class="flow-number">02</span><div><h3>MCP</h3><p>A narrow adapter: exactly four tools, explicit inputs, inspectable outputs.</p></div></li>
-            <li><span class="flow-number">03</span><div><h3>Frozen Protocol</h3><p>Tasks, rounds, rendering, and scoring held constant for the reported run.</p></div></li>
+            <li><span class="flow-number">01</span><div><h3>Reference</h3><p>The agent gets an image and a goal—rebuild what it sees as a real Blender scene.</p></div></li>
+            <li><span class="flow-number">02</span><div><h3>Build</h3><p>It writes Python through the CLI and runs Blender as a headless backend.</p></div></li>
+            <li><span class="flow-number">03</span><div><h3>Inspect</h3><p>It renders its own work, looks at the result, and keeps going. The GUI never needs to open.</p></div></li>
           </ol>
         </div>
       </section>

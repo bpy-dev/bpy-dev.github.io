@@ -89,14 +89,29 @@ class StaticHomepageTests(unittest.TestCase):
         cls.doc.feed(cls.html)
         cls.text = cls.doc.text
 
-    def test_primary_message_leads_with_developer_actions(self):
+    def test_primary_message_leads_with_image_to_headless_blender_workflow(self):
         h1 = re.findall(r"<h1[^>]*>(.*?)</h1>", self.html, flags=re.I | re.S)
         self.assertEqual(len(h1), 1)
         heading = re.sub(r"<[^>]+>", " ", h1[0])
         heading = " ".join(heading.split()).lower()
-        self.assertIn("blender as a python module", heading)
-        self.assertIn("narrow mcp interface", heading)
-        self.assertLess(self.text.lower().find("blender as a python module"), 500)
+        self.assertIn("give your agent a reference image", heading)
+        self.assertIn("build the blender scene", heading)
+        self.assertLess(self.text.lower().find("give your agent a reference image"), 1_000)
+
+    def test_video_explains_the_reference_to_cli_workflow_before_playback(self):
+        intro = self.source.index('<div class="hero-demo-intro">')
+        video = self.source.index('<video')
+        self.assertLess(intro, video)
+        for phrase in (
+            "Reference image → agent → headless Blender",
+            "without opening the GUI",
+            "writes Python through the CLI",
+            "renders headlessly",
+            "inspects the result",
+            "iterates",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, self.text)
 
     def test_community_preview_and_verified_evidence_are_present(self):
         required = [
@@ -147,13 +162,16 @@ class StaticHomepageTests(unittest.TestCase):
         self.assertIn("https://huggingface.co/datasets/DietCoke4671/BlenderBench", hrefs)
         self.assertIn("https://creativecommons.org/licenses/by/4.0/", hrefs)
 
-    def test_architecture_sequence_is_runtime_mcp_frozen_protocol(self):
-        sequence = "Runtime → MCP → Frozen Protocol"
+    def test_how_it_works_follows_reference_build_inspect_sequence(self):
+        sequence = "Reference → Build → Inspect"
         start = self.text.find(sequence)
-        positions = [self.text.find(label, start) for label in ["Runtime", "MCP", "Frozen Protocol"]]
+        positions = [self.text.find(label, start) for label in ["Reference", "Build", "Inspect"]]
         self.assertTrue(all(position >= 0 for position in positions))
         self.assertEqual(positions, sorted(positions))
         self.assertIn(sequence, self.text)
+        self.assertIn("The agent gets an image and a goal", self.text)
+        self.assertIn("runs Blender as a headless backend", self.text)
+        self.assertIn("renders its own work, looks at the result, and keeps going", self.text)
 
     def test_public_links_are_exact_and_build_work_is_not_overclaimed(self):
         hrefs = {attrs.get("href") for attrs in self.doc.attrs_for("a")}

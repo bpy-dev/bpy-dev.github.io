@@ -85,16 +85,6 @@ useSeoMeta({
       <section id="top" class="hero" aria-labelledby="hero-title">
         <div class="hero-grid" aria-hidden="true"><span /><span /><span /></div>
         <div class="shell hero-layout">
-          <div class="hero-copy">
-            <UBadge class="eyebrow" color="neutral" variant="subtle"><span class="status-dot" aria-hidden="true" /> Open community preview</UBadge>
-            <h1 id="hero-title">Use Blender as a Python module. Give agents a narrow MCP interface.</h1>
-            <p class="hero-lede">A focused path from ordinary Python code to Blender scenes: one runtime you can import, four tools an agent can reason about, and a protocol surface that stays still.</p>
-            <div class="actions" role="group" aria-label="Project links">
-              <UButton class="button button-primary" href="https://github.com/bpy-dev/blender-mcp">Explore blender-mcp <span aria-hidden="true">↗</span></UButton>
-              <UButton class="button button-secondary" color="neutral" variant="outline" href="https://github.com/bpy-dev/blender-mcp/issues">Give feedback <span aria-hidden="true">→</span></UButton>
-            </div>
-            <p class="hero-note">Standalone bpy packaging remains work in progress. <a href="https://github.com/michaelgold/buildbpy/pull/9">Track build work in PR #9</a>.</p>
-          </div>
           <figure class="hero-video-card">
             <div class="hero-video-topbar"><span>BlenderBench / Run 001</span><span>27 tasks · 270 rounds</span></div>
             <video
@@ -115,6 +105,16 @@ useSeoMeta({
               <span class="hero-video-links"><a href="#blenderbench-video-description">Read the video description and results</a> · <a href="https://huggingface.co/datasets/michaelgold/blenderbench-direct-results/resolve/7c2c43be4517aee4d76d2b445578988de186970c/video/blenderbench-complete-compilation.mp4">Watch/download on Hugging Face</a></span>
             </figcaption>
           </figure>
+          <div class="hero-copy">
+            <UBadge class="eyebrow" color="neutral" variant="subtle"><span class="status-dot" aria-hidden="true" /> Open community preview</UBadge>
+            <h1 id="hero-title">Use Blender as a Python module. Give agents a narrow MCP interface.</h1>
+            <p class="hero-lede">A focused path from ordinary Python code to Blender scenes: one runtime you can import, four tools an agent can reason about, and a protocol surface that stays still.</p>
+            <div class="actions" role="group" aria-label="Project links">
+              <UButton class="button button-primary" href="https://github.com/bpy-dev/blender-mcp">Explore blender-mcp <span aria-hidden="true">↗</span></UButton>
+              <UButton class="button button-secondary" color="neutral" variant="outline" href="https://github.com/bpy-dev/blender-mcp/issues">Give feedback <span aria-hidden="true">→</span></UButton>
+            </div>
+            <p class="hero-note">Standalone bpy packaging remains work in progress. <a href="https://github.com/michaelgold/buildbpy/pull/9">Track build work in PR #9</a>.</p>
+          </div>
         </div>
       </section>
 

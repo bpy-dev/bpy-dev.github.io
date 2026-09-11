@@ -287,6 +287,13 @@ class StaticHomepageTests(unittest.TestCase):
         self.assertIn("@media (prefers-reduced-motion: reduce)", self.source_css)
         self.assertIn(":focus-visible", self.css)
 
+    def test_hero_video_precedes_copy_in_dom_and_visual_order(self):
+        self.assertLess(
+            self.source.index('<figure class="hero-video-card">'),
+            self.source.index('<div class="hero-copy">'),
+        )
+        self.assertNotRegex(self.source_css, r"\.hero-video-card\{[^}]*order:")
+
     def test_hero_video_never_autoplays_before_user_action(self):
         video = next(
             attrs

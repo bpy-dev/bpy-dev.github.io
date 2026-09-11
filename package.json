@@ -1,0 +1,33 @@
+{
+  "name": "bpy-dev-site",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.15.1",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "test": "python3 -m unittest tests.test_nuxt_structure -v",
+    "test:site": "python3 -m unittest tests.test_site -v",
+    "test:all": "python3 -m unittest discover -s tests -v",
+    "check:refs": "python3 scripts/check_local_refs.py .output/public",
+    "typecheck": "nuxt typecheck"
+  },
+  "dependencies": {
+    "@nuxt/ui": "4.11.1",
+    "nuxt": "4.5.2",
+    "tailwindcss": "4.1.14",
+    "vue": "3.5.21",
+    "vue-router": "4.5.1"
+  },
+  "devDependencies": {
+    "typescript": "5.9.2",
+    "vue-tsc": "3.0.6"
+  },
+  "pnpm": {
+    "overrides": {
+      "esbuild@>=0.27.3 <0.28.1": "0.28.1"
+    }
+  }
+}

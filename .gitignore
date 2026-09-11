@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+artifacts/
+node_modules/
+.nuxt/
+.output/
+dist
+.env
+.env.*
+!.env.example

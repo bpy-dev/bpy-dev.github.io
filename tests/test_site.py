@@ -41,17 +41,28 @@ class Document(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.source = source
         self.tags: list[tuple[str, dict[str, str | None]]] = []
+        self.direct_children: dict[int, list[str]] = {}
+        self.open_tags: list[tuple[str, int]] = []
         self.text_parts: list[str] = []
         self.ignored_depth = 0
 
     def handle_starttag(self, tag: str, attrs):
         self.tags.append((tag, dict(attrs)))
+        index = len(self.tags) - 1
+        if self.open_tags:
+            self.direct_children.setdefault(self.open_tags[-1][1], []).append(tag)
+        if tag not in {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}:
+            self.open_tags.append((tag, index))
         if tag in {"script", "style"}:
             self.ignored_depth += 1
 
     def handle_endtag(self, tag: str):
         if tag in {"script", "style"}:
             self.ignored_depth -= 1
+        for offset in range(len(self.open_tags) - 1, -1, -1):
+            if self.open_tags[offset][0] == tag:
+                del self.open_tags[offset:]
+                break
 
     def handle_data(self, data: str):
         if not self.ignored_depth:
@@ -198,10 +209,14 @@ class StaticHomepageTests(unittest.TestCase):
                 self.assertIn(attrs.get("role"), {"group", "region"})
 
         actions = next(attrs for tag, attrs in self.doc.tags if "actions" in (attrs.get("class") or "").split())
-        runtime = next(attrs for tag, attrs in self.doc.tags if "runtime-card" in (attrs.get("class") or "").split())
+        hero_video = next(
+            (tag, attrs)
+            for tag, attrs in self.doc.tags
+            if "hero-video-card" in (attrs.get("class") or "").split()
+        )
         footer_links = next((tag, attrs) for tag, attrs in self.doc.tags if "footer-links" in (attrs.get("class") or "").split())
         self.assertEqual(actions.get("role"), "group")
-        self.assertEqual(runtime.get("role"), "region")
+        self.assertEqual(hero_video[0], "figure")
         self.assertEqual(footer_links[0], "nav")
 
         results_region = next(
@@ -211,6 +226,16 @@ class StaticHomepageTests(unittest.TestCase):
         )
         self.assertEqual(results_region.get("role"), "region")
         self.assertEqual(results_region.get("aria-label"), "Category mean best N-CLIP times 100")
+
+    def test_video_figcaption_is_a_direct_child_of_its_figure(self):
+        figure_index = next(
+            index
+            for index, (tag, attrs) in enumerate(self.doc.tags)
+            if tag == "figure" and "hero-video-card" in (attrs.get("class") or "").split()
+        )
+        children = self.doc.direct_children.get(figure_index, [])
+        self.assertIn("video", children)
+        self.assertEqual(children[-1], "figcaption")
 
     def test_generated_resource_hints_and_tables_are_valid_html(self):
         for attrs in self.doc.attrs_for("link"):
@@ -232,18 +257,18 @@ class StaticHomepageTests(unittest.TestCase):
 
     def test_normal_text_color_tokens_meet_wcag_aa(self):
         blue = re.search(r"--blue:\s*(#[0-9a-fA-F]{6})", self.css)
-        code_dim = re.search(r"\.code-dim\s*\{\s*color:\s*(#[0-9a-fA-F]{6})", self.css)
+        video_caption = re.search(r"\.hero-video-caption\s*\{[^}]*color:\s*(#[0-9a-fA-F]{6})", self.css)
         preview_kicker = re.search(r"\.preview \.kicker\s*\{([^}]*)\}", self.css)
         self.assertIsNotNone(blue)
-        self.assertIsNotNone(code_dim)
+        self.assertIsNotNone(video_caption)
         self.assertIsNotNone(preview_kicker)
-        assert blue and code_dim and preview_kicker
+        assert blue and video_caption and preview_kicker
 
         self.assertEqual(blue.group(1).lower(), "#1464f4")
         self.assertGreaterEqual(contrast_ratio(blue.group(1), "#f7f7f5"), 4.5)
         self.assertGreaterEqual(contrast_ratio(blue.group(1), "#ffffff"), 4.5)
-        self.assertEqual(code_dim.group(1).lower(), "#7a808c")
-        self.assertGreaterEqual(contrast_ratio(code_dim.group(1), "#0d0f13"), 4.5)
+        self.assertEqual(video_caption.group(1).lower(), "#b2b5bd")
+        self.assertGreaterEqual(contrast_ratio(video_caption.group(1), "#0d0f13"), 4.5)
         self.assertRegex(preview_kicker.group(1), r"opacity:\s*1(?:\.0+)?(?:;|$)")
 
     def test_mobile_navigation_has_real_toggle_and_progressive_fallback(self):
@@ -262,6 +287,71 @@ class StaticHomepageTests(unittest.TestCase):
         self.assertIn("@media (prefers-reduced-motion: reduce)", self.source_css)
         self.assertIn(":focus-visible", self.css)
 
+    def test_hero_video_never_autoplays_before_user_action(self):
+        video = next(
+            attrs
+            for attrs in self.doc.attrs_for("video")
+            if "hero-video-player" in (attrs.get("class") or "").split()
+        )
+        self.assertNotIn("autoplay", video)
+        self.assertNotRegex(self.source, r"\.play\s*\(")
+
+    def test_hero_video_does_not_download_media_during_initial_load(self):
+        video = next(
+            attrs
+            for attrs in self.doc.attrs_for("video")
+            if "hero-video-player" in (attrs.get("class") or "").split()
+        )
+        self.assertEqual(video.get("preload"), "none")
+
+    def test_hugging_face_video_fallback_is_visible_in_the_caption(self):
+        video_url = (
+            "https://huggingface.co/datasets/michaelgold/blenderbench-direct-results/resolve/"
+            "7c2c43be4517aee4d76d2b445578988de186970c/video/"
+            "blenderbench-complete-compilation.mp4"
+        )
+        caption = re.search(
+            r'<figcaption class="hero-video-caption">(?P<body>.*?)</figcaption>',
+            self.html,
+            flags=re.S,
+        )
+        self.assertIsNotNone(caption)
+        assert caption
+        self.assertIn(f'href="{video_url}"', caption.group("body"))
+        self.assertIn("Watch/download on Hugging Face", caption.group("body"))
+
+    def test_video_has_a_linked_visible_descriptive_results_alternative(self):
+        caption = re.search(
+            r'<figcaption class="hero-video-caption">(?P<body>.*?)</figcaption>',
+            self.html,
+            flags=re.S,
+        )
+        self.assertIsNotNone(caption)
+        assert caption
+        self.assertIn('href="#blenderbench-video-description"', caption.group("body"))
+
+        description = re.search(
+            r'<div id="blenderbench-video-description"[^>]*>(?P<body>.*?)</div>',
+            self.html,
+            flags=re.S,
+        )
+        self.assertIsNotNone(description)
+        assert description
+        text = " ".join(re.sub(r"<[^>]+>", " ", description.group("body")).split())
+        for phrase in (
+            "27 tasks and 270 rounds",
+            "task and round",
+            "generated scene beside its target render",
+            "CLIP image-embedding cosine similarity",
+            "generated Python token count",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, text)
+        self.assertIn(
+            "results/results-summary.json",
+            description.group("body"),
+        )
+
     def test_social_search_and_viewport_metadata_are_complete(self):
         metas = self.doc.attrs_for("meta")
         by_name = {m.get("name"): m.get("content") for m in metas if m.get("name")}
@@ -279,6 +369,28 @@ class StaticHomepageTests(unittest.TestCase):
         image = next((i for i in self.doc.attrs_for("img") if i.get("src") == "/assets/blenderbench-result.webp"), {})
         self.assertEqual(image.get("width"), "1280")
         self.assertEqual(image.get("height"), "720")
+
+    def test_latest_compilation_video_is_in_hero_and_readme(self):
+        video_url = (
+            "https://huggingface.co/datasets/michaelgold/blenderbench-direct-results/resolve/"
+            "7c2c43be4517aee4d76d2b445578988de186970c/video/"
+            "blenderbench-complete-compilation.mp4"
+        )
+        video = re.search(r"<video(?P<attrs>[^>]*)>", self.source, flags=re.S)
+        self.assertIsNotNone(video)
+        assert video
+        self.assertIn('class="hero-video-player"', video.group("attrs"))
+        for attribute in ("muted", "playsinline", "controls"):
+            with self.subTest(attribute=attribute):
+                self.assertRegex(video.group("attrs"), rf"\b{attribute}\b")
+        for attribute in ("autoplay", "loop"):
+            with self.subTest(attribute=attribute):
+                self.assertNotRegex(video.group("attrs"), rf"\b{attribute}\b")
+        self.assertIn('preload="none"', video.group("attrs"))
+        self.assertIn('poster="/assets/blenderbench-result.webp"', self.source)
+        self.assertIn(video_url, self.source)
+        self.assertIn("CLIP image-embedding cosine similarity", self.source)
+        self.assertIn(video_url, read_site_file(ROOT / "README.md"))
 
     def test_pages_configuration_and_readme_are_present(self):
         self.assertEqual(read_site_file(ROOT / "public/CNAME").strip(), "bpy.dev")

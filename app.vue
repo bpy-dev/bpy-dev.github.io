@@ -95,18 +95,26 @@ useSeoMeta({
             </div>
             <p class="hero-note">Standalone bpy packaging remains work in progress. <a href="https://github.com/michaelgold/buildbpy/pull/9">Track build work in PR #9</a>.</p>
           </div>
-          <UCard class="runtime-card" role="region" aria-label="Python example" :ui="{ body: 'p-0 sm:p-0' }">
-            <div class="runtime-topbar"><span>scene.py</span><span>Python</span></div>
-            <pre><code><span class="code-dim"># Blender, from Python</span>
-<span class="code-key">import</span> bpy
-
-cube = bpy.data.objects[<span class="code-string">"Cube"</span>]
-cube.rotation_euler.z = <span class="code-num">0.785</span>
-
-bpy.context.scene.render.filepath = <span class="code-string">"frame.png"</span>
-bpy.ops.render.render(write_still=<span class="code-key">True</span>)</code></pre>
-            <div class="runtime-status"><span><i aria-hidden="true" /> Local runtime</span><span>No application wrapper</span></div>
-          </UCard>
+          <figure class="hero-video-card">
+            <div class="hero-video-topbar"><span>BlenderBench / Run 001</span><span>27 tasks · 270 rounds</span></div>
+            <video
+              class="hero-video-player"
+              muted
+              playsinline
+              controls
+              preload="none"
+              poster="/assets/blenderbench-result.webp"
+              aria-label="BlenderBench run showing generated Blender scenes beside target renders across 27 tasks"
+            >
+              <source src="https://huggingface.co/datasets/michaelgold/blenderbench-direct-results/resolve/7c2c43be4517aee4d76d2b445578988de186970c/video/blenderbench-complete-compilation.mp4" type="video/mp4">
+              <a href="https://huggingface.co/datasets/michaelgold/blenderbench-direct-results/resolve/7c2c43be4517aee4d76d2b445578988de186970c/video/blenderbench-complete-compilation.mp4">Watch the BlenderBench compilation video</a>.
+            </video>
+            <figcaption class="hero-video-caption">
+              <span>Latest full run: generated scene beside target, task by task.</span>
+              <span>The on-screen percentage is CLIP image-embedding cosine similarity—not literal task accuracy.</span>
+              <span class="hero-video-links"><a href="#blenderbench-video-description">Read the video description and results</a> · <a href="https://huggingface.co/datasets/michaelgold/blenderbench-direct-results/resolve/7c2c43be4517aee4d76d2b445578988de186970c/video/blenderbench-complete-compilation.mp4">Watch/download on Hugging Face</a></span>
+            </figcaption>
+          </figure>
         </div>
       </section>
 
@@ -160,6 +168,13 @@ bpy.ops.render.render(write_still=<span class="code-key">True</span>)</code></pr
             <div><dt>4</dt><dd>exactly four MCP tools</dd></div>
           </dl>
           <div class="method-strip"><span>10 rounds per task</span><span>no VLM judge</span><span>no score feedback during generation</span></div>
+
+          <div id="blenderbench-video-description" class="video-description">
+            <p class="mini-label">Video description and results</p>
+            <h3>Text alternative for the silent compilation</h3>
+            <p>The compilation covers 27 tasks and 270 rounds. Each checkpoint identifies its task and round, places the generated scene beside its target render, and reports the CLIP image-embedding cosine similarity and generated Python token count shown on screen.</p>
+            <p><a href="https://huggingface.co/datasets/michaelgold/blenderbench-direct-results/resolve/7c2c43be4517aee4d76d2b445578988de186970c/results/results-summary.json">Open the detailed per-task results on Hugging Face</a>.</p>
+          </div>
 
           <div class="results-layout">
             <div class="results-copy">

@@ -2,6 +2,12 @@
 
 Nuxt + Nuxt UI homepage for **bpy.dev**, introducing a Python-first Blender runtime, the narrow [`blender-mcp`](https://github.com/bpy-dev/blender-mcp) interface, and initial BlenderBench evidence.
 
+## Latest BlenderBench run
+
+[![BlenderBench generated scene beside its target render](public/assets/blenderbench-result.webp)](https://huggingface.co/datasets/michaelgold/blenderbench-direct-results/resolve/7c2c43be4517aee4d76d2b445578988de186970c/video/blenderbench-complete-compilation.mp4)
+
+[Watch the complete 27-task, 270-round BlenderBench video](https://huggingface.co/datasets/michaelgold/blenderbench-direct-results/resolve/7c2c43be4517aee4d76d2b445578988de186970c/video/blenderbench-complete-compilation.mp4). The on-video “CLIP accuracy” label means CLIP image-embedding cosine similarity, not literal task accuracy.
+
 ## Local development
 
 Requires Node.js 24 and pnpm 10 (the exact pnpm version is recorded in `packageManager`).

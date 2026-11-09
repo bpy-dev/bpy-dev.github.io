@@ -2,6 +2,13 @@
 
 Nuxt + Nuxt UI homepage for **bpy.dev**, introducing a Python-first Blender runtime, the narrow [`blender-mcp`](https://github.com/bpy-dev/blender-mcp) interface, and initial BlenderBench evidence.
 
+## Project direction
+
+See [PROJECT.md](PROJECT.md) for the authoritative whole-project plan, including
+the planned full enhanced Blender MCP Hermes plugin with local and paid Fstack
+cloud execution. Existing runtime evidence and planned integration acceptance
+are kept separate there.
+
 ## Latest BlenderBench run
 
 [![BlenderBench generated scene beside its target render](public/assets/blenderbench-result.webp)](https://huggingface.co/datasets/michaelgold/blenderbench-direct-results/resolve/7c2c43be4517aee4d76d2b445578988de186970c/video/blenderbench-complete-compilation.mp4)
